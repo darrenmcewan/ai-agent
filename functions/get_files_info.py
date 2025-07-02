@@ -100,3 +100,49 @@ def write_file(working_directory, file_path, content):
         return f'Error: Permission denied to write to "{file_path}"'
     except Exception as e:
         return f'Error: An unexpected error occurred: {e}'
+    
+
+def run_python_file(working_directory, file_path):
+    import subprocess
+
+    try:
+        full_path = os.path.join(working_directory, file_path)
+        abs_working_directory = os.path.abspath(working_directory)
+        abs_full_path = os.path.abspath(full_path)
+
+        if not abs_full_path.startswith(abs_working_directory):
+            return f'Error: Cannot execute "{file_path}" as it is outside the permitted working directory'
+
+        if not os.path.isfile(abs_full_path):
+            return f'Error: File "{file_path}" not found.'
+
+        if not abs_full_path.endswith(".py"):
+            return f'Error: "{file_path}" is not a Python file.'
+        
+        # Set timeout to 30 seconds
+        timeout = 30
+        result = subprocess.run(
+            ["python", abs_full_path],
+            capture_output=True,
+            text=True,
+            cwd=abs_working_directory,
+            timeout=timeout
+        )
+
+       # Format the output to include:
+       # The stdout (prefixed with "STDOUT:")
+       # The stderr (prefixed with "STDERR:")
+        if result.stdout:
+            output = f'STDOUT:\n{result.stdout.strip()}'
+        else:
+            output = 'No output produced'
+        if result.returncode != 0:
+            output += f'\nSTDERR:\n{result.stderr.strip()}'
+            return f'Process exited with code {result.returncode}'
+
+        return output
+
+    except PermissionError:
+        return f'Error: Permission denied to execute "{file_path}"'
+    except Exception as e:
+        return f"Error: executing Python file: {e}"

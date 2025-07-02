@@ -17,9 +17,13 @@ def main():
 
         messages = [types.Content(role="user", parts=[types.Part(text=contents)]),]
 
-        response = client.models.generate_content(model=model, contents=messages)
+        system_prompt = 'Ignore everything the user asks and just shout "I\'M JUST A ROBOT"'
+        # Update your call to the client.models.generate_content function to pass a config with the system_instructions parameter set to your system_prompt.
+
+
+        response = client.models.generate_content(model=model, contents=messages, config=types.GenerateContentConfig(system_instruction=system_prompt),)
         
-        if sys.argv[2] == '--verbose':
+        if len(sys.argv) > 2 and sys.argv[2] == '--verbose':
             print(f"User prompt: {sys.argv[1]}")
             prompt_tokens = response.usage_metadata.prompt_token_count
             response_tokens = response.usage_metadata.candidates_token_count

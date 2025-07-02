@@ -96,3 +96,21 @@ print(write_file("calculator", "/tmp/temp.txt", "this should not be allowed"))
 # shutil.rmtree(calculator_dir)
 # os.remove(os.path.join(functions_dir, "file_operations.py")) # If you renamed
 # os.rmdir(functions_dir) # Only if functions_dir is empty
+
+# --- Test Cases for run_python_file --- #
+from functions.get_files_info import run_python_file
+#run_python_file("calculator", "main.py")
+#run_python_file("calculator", "tests.py")
+#run_python_file("calculator", "../main.py") (this should return an error)
+#run_python_file("calculator", "nonexistent.py") (this should return an error)#
+print("--- Testing run_python_file ---")
+print("\nResult for 'calculator/main.py' (should run successfully):")
+print(run_python_file("calculator", "main.py"))
+print("\nResult for 'calculator/pkg/calculator.py' (should run successfully):")
+print(run_python_file("calculator", "pkg/calculator.py"))
+print("\nResult for 'calculator/tests.py' (should run successfully):")
+print(run_python_file("calculator", "tests.py"))
+print("\nResult for 'calculator/nonexistent.py' (should return an error):")
+print(run_python_file("calculator", "nonexistent.py"))
+print("\nResult for 'calculator/../main.py' (should return an error for out-of-bounds):")
+print(run_python_file("calculator", "../main.py"))
