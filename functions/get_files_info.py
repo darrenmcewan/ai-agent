@@ -1,3 +1,4 @@
+import os
 def get_files_info(working_directory, directory=None):
     try:
         if directory is None or directory == ".":
